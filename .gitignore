@@ -1,0 +1,11 @@
+# Virtual environment
+.venv/
+
+# Python cache files
+*.pyc
+
+# Pytest cache
+.pytest_cache/
+
+# Generated output files
+output/p
