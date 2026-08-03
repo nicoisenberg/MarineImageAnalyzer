@@ -2,7 +2,7 @@ import sys
 
 from src.image_loader import load_image
 from src.image_saver import save_image
-from src.preprocessing import resize_image
+from src.preprocessing import resize_image, convert_to_grayscale
 
 
 image = load_image("images/sample_marine.jpg")
@@ -31,3 +31,18 @@ if save_successful:
     print("Resized image saved successfully.")
 else:
     print("Failed to save resized image.")
+
+grayscale_image = convert_to_grayscale(resized_image)
+
+print("Image converted to grayscale successfully.")
+print(f"Grayscale image shape: {grayscale_image.shape}")
+
+save_successful = save_image(
+    grayscale_image,
+    "output/grayscale_image.jpg"
+)
+
+if save_successful:
+    print("Grayscale image saved successfully.")
+else:
+    print("Failed to save grayscale image")
