@@ -1,8 +1,9 @@
 import sys
 
+from src.detection import detect_edges
 from src.image_loader import load_image
-from src.image_saver import save_image
-from src.preprocessing import resize_image, convert_to_grayscale
+from src.image_saver import print_save_status, save_image
+from src.preprocessing import convert_to_grayscale, resize_image
 
 
 image = load_image("images/sample_marine.jpg")
@@ -27,10 +28,10 @@ save_successful = save_image(
     "output/resized_image.jpg"
 )
 
-if save_successful:
-    print("Resized image saved successfully.")
-else:
-    print("Failed to save resized image.")
+print_save_status(
+    save_successful,
+    image_label="Resized"
+)
 
 grayscale_image = convert_to_grayscale(resized_image)
 
@@ -42,7 +43,26 @@ save_successful = save_image(
     "output/grayscale_image.jpg"
 )
 
-if save_successful:
-    print("Grayscale image saved successfully.")
-else:
-    print("Failed to save grayscale image")
+print_save_status(
+    save_successful,
+    image_label="Grayscale"
+)
+
+edge_image = detect_edges(
+    grayscale_image,
+    lower_threshold=100,
+    upper_threshold=200
+)
+
+print("Image edges detected successfully.")
+print(f"Edge image shape: {edge_image.shape}")
+
+save_successful = save_image(
+    edge_image,
+    "output/edge_image.jpg"
+)
+
+print_save_status(
+    save_successful,
+    image_label="Edge"
+)
