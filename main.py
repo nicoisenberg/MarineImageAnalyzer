@@ -1,6 +1,6 @@
 import sys
 
-from src.detection import detect_edges, draw_contours, find_contours
+from src.detection import detect_edges, draw_contours, filter_contours_by_area, find_contours
 from src.image_loader import load_image
 from src.image_saver import print_save_status, save_image
 from src.preprocessing import apply_gaussian_blur, convert_to_grayscale, resize_image
@@ -109,3 +109,11 @@ print_save_status(
     save_successful,
     image_label="Contours"
 )
+
+relevant_contours = filter_contours_by_area(
+    contours,
+    min_area=500
+)
+
+print(f"Detected contours: {len(contours)}")
+print(f"Detected relevant contours: {len(relevant_contours)}")

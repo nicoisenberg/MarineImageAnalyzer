@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.detection import detect_edges, draw_contours, find_contours
+from src.detection import detect_edges, draw_contours, filter_contours_by_area, find_contours
 
 
 def test_detect_edges():
@@ -49,3 +49,26 @@ def test_draw_contours():
     )
 
     assert np.any(red_pixels)
+
+
+def test_filter_contour_by_area():
+    image_small_rectangle = np.zeros((100, 100), dtype=np.uint8)
+    image_small_rectangle[25:30, 25:30] = 255
+    image_large_rectangle = np.zeros((100, 100), dtype=np.uint8)
+    image_large_rectangle[25:75, 25:75] = 255
+
+    contours_small_rectangle = find_contours(image_small_rectangle)
+    contours_large_rectangle = find_contours(image_large_rectangle)
+
+    relevant_contours_small_rectangle = filter_contours_by_area(
+        contours_small_rectangle,
+        min_area=500
+    )
+
+    relevant_contours_large_rectangle = filter_contours_by_area(
+        contours_large_rectangle,
+        min_area=500
+    )
+
+    assert len(relevant_contours_small_rectangle) == 0
+    assert len(relevant_contours_large_rectangle) == 1

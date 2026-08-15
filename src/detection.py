@@ -29,3 +29,14 @@ def draw_contours(image, contours):
     )
 
     return result
+
+
+def filter_contours_by_area(contours, min_area):
+    relevant_contours = []
+
+    for contour in contours:
+        if cv2.contourArea(contour) >= min_area:
+            relevant_contours.append(contour)
+
+    return relevant_contours
+
