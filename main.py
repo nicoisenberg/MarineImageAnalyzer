@@ -1,6 +1,6 @@
 import sys
 
-from src.detection import detect_edges
+from src.detection import detect_edges, find_contours
 from src.image_loader import load_image
 from src.image_saver import print_save_status, save_image
 from src.preprocessing import apply_gaussian_blur, convert_to_grayscale, resize_image
@@ -87,3 +87,7 @@ print_save_status(
     save_successful,
     image_label="Edge"
 )
+
+contours = find_contours(edge_image)
+
+print(f"Detected contours: {len(contours)}")
