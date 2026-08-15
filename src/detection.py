@@ -15,3 +15,17 @@ def find_contours(edge_image):
     )
 
     return contours
+
+
+def draw_contours(image, contours):
+    result = image.copy()
+
+    cv2.drawContours(
+        result,
+        contours,
+        contourIdx=-1,
+        color=(0, 0, 255),
+        thickness=2
+    )
+
+    return result

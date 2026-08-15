@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.detection import detect_edges, find_contours
+from src.detection import detect_edges, draw_contours, find_contours
 
 
 def test_detect_edges():
@@ -25,3 +25,27 @@ def test_find_contours():
 
     assert len(contours) == 1
 
+
+def test_draw_contours():
+    mask = np.zeros((100, 100), dtype=np.uint8)
+    mask[25:75, 25:75] = 255
+
+    contours = find_contours(mask)
+
+    image = np.zeros((100, 100, 3), dtype=np.uint8)
+    original_image = image.copy()
+
+    image_contours = draw_contours(
+        image,
+        contours
+    )
+
+    assert image_contours.shape == image.shape
+    assert np.array_equal(image, original_image)
+
+    red_pixels = np.all(
+        image_contours == [0, 0, 255],
+        axis=2
+    )
+
+    assert np.any(red_pixels)
