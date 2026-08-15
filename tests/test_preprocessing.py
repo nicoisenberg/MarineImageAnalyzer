@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.preprocessing import resize_image, convert_to_grayscale
+from src.preprocessing import apply_gaussian_blur, convert_to_grayscale, resize_image 
 
 
 def test_resize_image():
@@ -23,3 +23,18 @@ def test_grayscale_conversion():
 
     assert grayscale_image is not None
     assert grayscale_image.shape == (100, 200)
+
+
+def test_gaussian_blur():
+    image = np.zeros((100, 200), dtype=np.uint8)
+    image[50, 100] = 255
+
+    blurred_image = apply_gaussian_blur(
+        image,
+        kernel_size=5
+    )
+
+    assert blurred_image is not None
+    assert blurred_image.shape == image.shape
+    assert blurred_image[50, 100] < 255
+    assert np.any(blurred_image > 0)

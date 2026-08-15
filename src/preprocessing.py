@@ -12,3 +12,8 @@ def convert_to_grayscale(image):
 
     return result
 
+
+def apply_gaussian_blur(grayscale_image, kernel_size):
+    result = cv2.GaussianBlur(grayscale_image, (kernel_size, kernel_size), 0)
+
+    return result
