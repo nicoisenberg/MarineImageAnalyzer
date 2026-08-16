@@ -1,6 +1,6 @@
 import sys
 
-from src.detection import detect_edges, draw_contours, filter_contours_by_area, find_contours
+from src.detection import detect_edges, draw_bounding_boxes, draw_contours, filter_contours_by_area, find_contours
 from src.image_loader import load_image
 from src.image_saver import print_save_status, save_image
 from src.preprocessing import apply_gaussian_blur, convert_to_grayscale, resize_image
@@ -117,3 +117,21 @@ relevant_contours = filter_contours_by_area(
 
 print(f"Detected contours: {len(contours)}")
 print(f"Detected relevant contours: {len(relevant_contours)}")
+
+bounding_box_image = draw_bounding_boxes(
+    image=resized_image,
+    contours=relevant_contours
+)
+
+print("Boxes drawn on image successfully.")
+print(f"Bounding box image shape: {bounding_box_image.shape}")
+
+save_successful = save_image(
+    bounding_box_image,
+    "output/bounding_box_image.jpg"
+)
+
+print_save_status(
+    save_successful=save_successful,
+    image_label="Bounding box"
+)

@@ -40,3 +40,19 @@ def filter_contours_by_area(contours, min_area):
 
     return relevant_contours
 
+
+def draw_bounding_boxes(image, contours):
+    result = image.copy()
+
+    for contour in contours:
+        x, y, width, height = cv2.boundingRect(contour)
+
+        cv2.rectangle(
+            result,
+            pt1=(x, y),
+            pt2=(x + width, y + height),
+            color=(0, 0, 255),
+            thickness=2
+        )
+
+    return result

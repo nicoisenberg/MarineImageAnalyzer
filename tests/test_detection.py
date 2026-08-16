@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.detection import detect_edges, draw_contours, filter_contours_by_area, find_contours
+from src.detection import detect_edges, draw_bounding_boxes, draw_contours, filter_contours_by_area, find_contours
 
 
 def test_detect_edges():
@@ -72,3 +72,28 @@ def test_filter_contour_by_area():
 
     assert len(relevant_contours_small_rectangle) == 0
     assert len(relevant_contours_large_rectangle) == 1
+
+
+def test_draw_bounding_boxes():
+    mask = np.zeros((100, 100), dtype=np.uint8)
+    mask[25:75, 25:75] = 255
+
+    contours = find_contours(mask)
+
+    image = np.zeros((100, 100, 3), dtype=np.uint8)
+    original_image = image.copy()
+
+    bounding_box_image = draw_bounding_boxes(
+        image=image,
+        contours=contours
+    )
+
+    assert bounding_box_image.shape == image.shape
+    assert np.array_equal(image, original_image)
+
+    red_pixels = np.all(
+        bounding_box_image == [0, 0, 255],
+        axis=2
+    )
+
+    assert np.any(red_pixels)
