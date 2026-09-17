@@ -1,5 +1,6 @@
 import sys
 
+from src.analysis import calculate_contour_statistics
 from src.detection import detect_edges, draw_bounding_boxes, draw_contours, filter_contours_by_area, find_contours
 from src.image_loader import load_image
 from src.image_saver import print_save_status, save_image
@@ -112,10 +113,9 @@ print_save_status(
 
 relevant_contours = filter_contours_by_area(
     contours,
-    min_area=500
+    min_area=100
 )
 
-print(f"Detected contours: {len(contours)}")
 print(f"Detected relevant contours: {len(relevant_contours)}")
 
 bounding_box_image = draw_bounding_boxes(
@@ -135,3 +135,19 @@ print_save_status(
     save_successful=save_successful,
     image_label="Bounding box"
 )
+
+all_contour_stats = calculate_contour_statistics(contours)
+print(
+    "\nAll contour statistics:\n"
+    f"Count: {all_contour_stats['count']}\n"
+    f"Total Area: {all_contour_stats['total_area']}\n"
+    f"Average Area: {all_contour_stats['average_area']}\n"
+    f"Largest Area: {all_contour_stats['largest_area']}")
+
+relevant_contour_stats = calculate_contour_statistics(relevant_contours)
+print(
+    "\nRelevant contour statistics:\n"
+    f"Count: {relevant_contour_stats['count']}\n"
+    f"Total Area: {relevant_contour_stats['total_area']}\n"
+    f"Average Area: {relevant_contour_stats['average_area']}\n"
+    f"Largest Area: {relevant_contour_stats['largest_area']}")
