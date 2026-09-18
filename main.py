@@ -4,12 +4,11 @@ from src.analysis import calculate_contour_statistics
 from src.detection import detect_edges, draw_bounding_boxes, draw_contours, filter_contours_by_area, find_contours
 from src.image_loader import load_image
 from src.image_saver import print_save_status, save_image
-from src.preprocessing import apply_gaussian_blur, convert_to_grayscale, resize_image
+from src.preprocessing import apply_gaussian_blur, apply_morphological_closing, convert_to_grayscale, resize_image
 
 
 image = load_image("images/sample_marine.jpg")
 
-#Load image
 if image is None:
     sys.exit(1)
 
@@ -89,13 +88,33 @@ print_save_status(
     image_label="Edge"
 )
 
-contours = find_contours(edge_image)
+closed_edge_image = apply_morphological_closing(
+    edge_image=edge_image,
+    kernel_size=3
+)
 
-print(f"Detected contours: {len(contours)}")
+print("Image edges were closed successfully.")
+print(f"Closed edge image shape: {closed_edge_image.shape}")
+
+save_successful = save_image(
+    closed_edge_image,
+    "output/closed_edge_image.jpg"
+)
+
+print_save_status(
+    save_successful,
+    image_label="Closed edge"
+)
+
+original_contours = find_contours(edge_image)
+closed_contours = find_contours(closed_edge_image)
+
+print(f"Detected original contours: {len(original_contours)}")
+print(f"Detected closed contours: {len(closed_contours)}")
 
 image_contours = draw_contours(
     resized_image,
-    contours
+    closed_contours
 )
 
 print("Contours drawn on image successfully.")
@@ -112,7 +131,7 @@ print_save_status(
 )
 
 relevant_contours = filter_contours_by_area(
-    contours,
+    closed_contours,
     min_area=100
 )
 
@@ -136,13 +155,23 @@ print_save_status(
     image_label="Bounding box"
 )
 
-all_contour_stats = calculate_contour_statistics(contours)
+original_contour_stats = calculate_contour_statistics(original_contours)
 print(
     "\nAll contour statistics:\n"
-    f"Count: {all_contour_stats['count']}\n"
-    f"Total Area: {all_contour_stats['total_area']}\n"
-    f"Average Area: {all_contour_stats['average_area']}\n"
-    f"Largest Area: {all_contour_stats['largest_area']}")
+    f"Count: {original_contour_stats['count']}\n"
+    f"Total Area: {original_contour_stats['total_area']}\n"
+    f"Average Area: {original_contour_stats['average_area']}\n"
+    f"Largest Area: {original_contour_stats['largest_area']}"
+    )
+
+closed_contour_stats = calculate_contour_statistics(closed_contours)
+print(
+    "\nClosed contour statistics:\n"
+    f"Count: {closed_contour_stats['count']}\n"
+    f"Total Area: {closed_contour_stats['total_area']}\n"
+    f"Average Area: {closed_contour_stats['average_area']}\n"
+    f"Largest Area: {closed_contour_stats['largest_area']}"
+    )
 
 relevant_contour_stats = calculate_contour_statistics(relevant_contours)
 print(
@@ -150,4 +179,5 @@ print(
     f"Count: {relevant_contour_stats['count']}\n"
     f"Total Area: {relevant_contour_stats['total_area']}\n"
     f"Average Area: {relevant_contour_stats['average_area']}\n"
-    f"Largest Area: {relevant_contour_stats['largest_area']}")
+    f"Largest Area: {relevant_contour_stats['largest_area']}"
+    )

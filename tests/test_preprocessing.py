@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.preprocessing import apply_gaussian_blur, convert_to_grayscale, resize_image 
+from src.preprocessing import apply_gaussian_blur, apply_morphological_closing, convert_to_grayscale, resize_image 
 
 
 def test_resize_image():
@@ -38,3 +38,17 @@ def test_gaussian_blur():
     assert blurred_image.shape == image.shape
     assert blurred_image[50, 100] < 255
     assert np.any(blurred_image > 0)
+
+
+def test_morphological_closing():
+    image = np.zeros((100, 100), dtype=np.uint8)
+    image[25:50, 20] = 255
+    image[51:60, 20] = 255
+
+    closed_edge_image = apply_morphological_closing(
+        edge_image=image,
+        kernel_size=3
+    )
+
+    assert image.shape == closed_edge_image.shape
+    assert closed_edge_image[50, 20] == 255

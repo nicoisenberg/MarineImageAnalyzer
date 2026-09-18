@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 
 def resize_image(image, width, height):
@@ -15,5 +16,17 @@ def convert_to_grayscale(image):
 
 def apply_gaussian_blur(grayscale_image, kernel_size):
     result = cv2.GaussianBlur(grayscale_image, (kernel_size, kernel_size), 0)
+
+    return result
+
+
+def apply_morphological_closing(edge_image, kernel_size):
+    kernel = np.ones((kernel_size, kernel_size), dtype=np.uint8)
+
+    result = cv2.morphologyEx(
+        edge_image,
+        cv2.MORPH_CLOSE,
+        kernel
+        )
 
     return result
