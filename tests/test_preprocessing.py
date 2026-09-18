@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.preprocessing import apply_gaussian_blur, apply_morphological_closing, convert_to_grayscale, resize_image 
+from src.preprocessing import apply_clahe, apply_gaussian_blur, apply_morphological_closing, convert_to_grayscale, resize_image 
 
 
 def test_resize_image():
@@ -52,3 +52,18 @@ def test_morphological_closing():
 
     assert image.shape == closed_edge_image.shape
     assert closed_edge_image[50, 20] == 255
+
+
+def test_apply_clahe():
+    image = np.full((100, 100), 100, dtype=np.uint8)
+    image[20:30, 20:40] = 110
+
+    enhanced_image = apply_clahe(
+        grayscale_image=image,
+        clip_limit=2.0,
+        tile_grid_size=(8, 8)
+    )
+
+    assert image.shape == enhanced_image.shape
+    assert image.dtype == enhanced_image.dtype
+    assert not np.array_equal(image, enhanced_image)

@@ -30,3 +30,14 @@ def apply_morphological_closing(edge_image, kernel_size):
         )
 
     return result
+
+
+def apply_clahe(grayscale_image, clip_limit, tile_grid_size):
+    clahe = cv2.createCLAHE(
+        clipLimit=clip_limit,
+        tileGridSize=tile_grid_size
+        )
+
+    enhanced_image = clahe.apply(grayscale_image)
+
+    return enhanced_image

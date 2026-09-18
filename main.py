@@ -4,7 +4,7 @@ from src.analysis import calculate_contour_statistics
 from src.detection import detect_edges, draw_bounding_boxes, draw_contours, filter_contours_by_area, find_contours
 from src.image_loader import load_image
 from src.image_saver import print_save_status, save_image
-from src.preprocessing import apply_gaussian_blur, apply_morphological_closing, convert_to_grayscale, resize_image
+from src.preprocessing import apply_clahe, apply_gaussian_blur, apply_morphological_closing, convert_to_grayscale, resize_image
 
 
 image = load_image("images/sample_marine.jpg")
@@ -50,9 +50,28 @@ print_save_status(
     image_label="Grayscale"
 )
 
+enhanced_image = apply_clahe(
+    grayscale_image=grayscale_image,
+    clip_limit=2.0,
+    tile_grid_size=(8, 8)
+)
+
+print("Image contrast enhanced successfully.")
+print(f"Enhanced image shape: {enhanced_image.shape}")
+
+save_successful = save_image(
+    enhanced_image,
+    "output/enhanced_image.jpg"
+)
+
+print_save_status(
+    save_successful,
+    image_label="Enhanced"
+)
+
 # Reduce image noise before edge detection
 blurred_image = apply_gaussian_blur(
-    grayscale_image,
+    enhanced_image,
     kernel_size=5
 )
 
