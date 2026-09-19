@@ -1,3 +1,4 @@
+import argparse
 import sys
 
 from src.analysis import calculate_contour_statistics
@@ -6,6 +7,22 @@ from src.image_loader import load_image
 from src.image_saver import print_save_status, save_image
 from src.preprocessing import apply_clahe, apply_gaussian_blur, apply_morphological_closing, convert_to_grayscale, resize_image
 
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(
+        description="Analyse marine images."
+    )
+
+    parser.add_argument(
+        "--use-clahe",
+        action="store_true",
+        help="Apply CLAHE contrast enhancement before edge detection."
+    )
+
+    return parser.parse_args()
+
+
+args = parse_arguments()
 
 image = load_image("images/sample_marine.jpg")
 
@@ -50,28 +67,34 @@ print_save_status(
     image_label="Grayscale"
 )
 
-enhanced_image = apply_clahe(
-    grayscale_image=grayscale_image,
-    clip_limit=2.0,
-    tile_grid_size=(8, 8)
-)
+preprocessed_image = grayscale_image
 
-print("Image contrast enhanced successfully.")
-print(f"Enhanced image shape: {enhanced_image.shape}")
+if args.use_clahe:
 
-save_successful = save_image(
-    enhanced_image,
-    "output/enhanced_image.jpg"
-)
+    enhanced_image = apply_clahe(
+        grayscale_image=grayscale_image,
+        clip_limit=2.0,
+        tile_grid_size=(8, 8)
+    )
 
-print_save_status(
-    save_successful,
-    image_label="Enhanced"
-)
+    print("Image contrast enhanced successfully.")
+    print(f"Enhanced image shape: {enhanced_image.shape}")
+
+    save_successful = save_image(
+        enhanced_image,
+        "output/enhanced_image.jpg"
+    )
+
+    print_save_status(
+        save_successful,
+        image_label="Enhanced"
+    )
+
+    preprocessed_image = enhanced_image
 
 # Reduce image noise before edge detection
 blurred_image = apply_gaussian_blur(
-    enhanced_image,
+    preprocessed_image,
     kernel_size=5
 )
 
@@ -176,7 +199,7 @@ print_save_status(
 
 original_contour_stats = calculate_contour_statistics(original_contours)
 print(
-    "\nAll contour statistics:\n"
+    "\nOriginal contour statistics:\n"
     f"Count: {original_contour_stats['count']}\n"
     f"Total Area: {original_contour_stats['total_area']}\n"
     f"Average Area: {original_contour_stats['average_area']}\n"
