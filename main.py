@@ -19,6 +19,57 @@ def parse_arguments():
         help="Apply CLAHE contrast enhancement before edge detection."
     )
 
+    parser.add_argument(
+        "--clahe-clip",
+        type=float,
+        default=2.0,
+        help="Clip limit of CLAHE."
+    )
+
+    parser.add_argument(
+        "--clahe-grid",
+        type=int,
+        nargs=2,
+        default=(8, 8),
+        metavar=("X", "Y"),
+        help="CLAHE grid size as two integers."
+    )
+
+    parser.add_argument(
+        "--blur-kernel",
+        type=int,
+        default=5,
+        help="Kernel size for Gaussian blur."
+    )
+
+    parser.add_argument(
+        "--canny-low",
+        type=int,
+        default=100,
+        help="Lower threshold for Canny edge detection."
+    )
+
+    parser.add_argument(
+        "--canny-high",
+        type=int,
+        default=200,
+        help="Upper threshold for Canny edge detection."
+    )
+
+    parser.add_argument(
+        "--morph-kernel",
+        type=int,
+        default=3,
+        help="Kernel size for morphological closing."
+    )
+
+    parser.add_argument(
+        "--min-area",
+        type=int,
+        default=100,
+        help="Minimum contour area in pixels."
+    )
+
     return parser.parse_args()
 
 
@@ -74,8 +125,8 @@ def main():
 
         enhanced_image = apply_clahe(
             grayscale_image=grayscale_image,
-            clip_limit=2.0,
-            tile_grid_size=(8, 8)
+            clip_limit=args.clahe_clip,
+            tile_grid_size=tuple(args.clahe_grid)
         )
 
         print("Image contrast enhanced successfully.")
@@ -96,7 +147,7 @@ def main():
     # Reduce image noise before edge detection
     blurred_image = apply_gaussian_blur(
         preprocessed_image,
-        kernel_size=5
+        kernel_size=args.blur_kernel
     )
 
     print("Gaussian blur applied successfully.")
@@ -114,8 +165,8 @@ def main():
 
     edge_image = detect_edges(
         blurred_image,
-        lower_threshold=100,
-        upper_threshold=200
+        lower_threshold=args.canny_low,
+        upper_threshold=args.canny_high
     )
 
     print("Image edges detected successfully.")
@@ -133,7 +184,7 @@ def main():
 
     closed_edge_image = apply_morphological_closing(
         edge_image=edge_image,
-        kernel_size=3
+        kernel_size=args.morph_kernel
     )
 
     print("Image edges were closed successfully.")
@@ -175,7 +226,7 @@ def main():
 
     relevant_contours = filter_contours_by_area(
         closed_contours,
-        min_area=100
+        min_area=args.min_area
     )
 
     print(f"Detected relevant contours: {len(relevant_contours)}")
