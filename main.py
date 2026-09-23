@@ -70,7 +70,33 @@ def parse_arguments():
         help="Minimum contour area in pixels."
     )
 
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    if args.clahe_clip <= 0:
+        parser.error("--clahe-clip must be a positive float.")
+
+    if args.clahe_grid[0] <= 0 or args.clahe_grid[1] <= 0:
+        parser.error("--clahe-grid values must both be positive integers.")
+
+    if args.blur_kernel <= 0 or args.blur_kernel % 2 == 0:
+        parser.error("--blur-kernel must be a positive odd integer.")
+
+    if not 0 <= args.canny_low <= 255:
+        parser.error("--canny-low must be between 0 and 255.")
+
+    if not 0 <= args.canny_high <= 255:
+        parser.error("--canny-high must be between 0 and 255.")
+        
+    if args.canny_low >= args.canny_high:
+        parser.error("--canny-low must be lower than --canny-high.")
+
+    if args.morph_kernel <= 0:
+        parser.error("--morph-kernel must be a positive integer.")
+
+    if args.min_area < 0:
+        parser.error("--min-area must be 0 or larger.")
+
+    return args
 
 
 def main(): 
