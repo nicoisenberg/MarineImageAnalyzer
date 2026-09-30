@@ -1,7 +1,8 @@
 import argparse
-
 from pathlib import Path
+
 from src.pipeline import process_image
+from src.report import save_summary
 
 
 def parse_arguments():
@@ -100,20 +101,33 @@ def main():
 
     image_directory = Path("images")
 
-    image_paths = image_directory.glob("*.jpg")
+    image_paths = sorted(image_directory.glob("*.jpg"))
+
+    results = []
 
     for image_path in image_paths:
         output_directory = Path("output") / image_path.stem
+    
         output_directory.mkdir(
             parents=True,
             exist_ok=True
         )
-        process_image(
+        
+        result = process_image(
             image_path,
             output_directory,
             args
         )
-        
+
+        if result is not None:
+            results.append(result)
+
+    if results:
+        save_summary(
+            results,
+            Path("output") / "summary.csv"
+        )
+
 
 if __name__ == "__main__":
     main()

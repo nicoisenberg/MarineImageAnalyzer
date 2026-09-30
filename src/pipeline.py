@@ -207,3 +207,13 @@ def process_image(image_path, output_directory, args):
         f"Average Area: {relevant_contour_stats['average_area']}\n"
         f"Largest Area: {relevant_contour_stats['largest_area']}"
     )
+
+    return {
+        "image": image_path.name,
+        "original_contours": original_contour_stats["count"],
+        "closed_contours": closed_contour_stats["count"],
+        "relevant_contours": relevant_contour_stats["count"],
+        "relevant_total_area": relevant_contour_stats["total_area"],
+        "relevant_average_area": relevant_contour_stats["average_area"],
+        "relevant_largest_area": relevant_contour_stats["largest_area"]
+    }
